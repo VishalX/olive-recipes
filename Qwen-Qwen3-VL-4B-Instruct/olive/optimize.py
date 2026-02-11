@@ -153,7 +153,7 @@ def optimize(device: str = "gpu"):
     print(f"Optimizing the model for {device.upper()}...")
     from olive import run
 
-    # run("embedding.json")
+    run("embedding.json")
     # run("text.json")
     run("vision.json")
 
