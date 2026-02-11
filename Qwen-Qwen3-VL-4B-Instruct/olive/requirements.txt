@@ -1,0 +1,3 @@
+git+https://github.com/microsoft/Olive.git@main
+# Qwen3-VL requires a recent transformers (e.g. 4.46+)
+transformers>=4.46.0
