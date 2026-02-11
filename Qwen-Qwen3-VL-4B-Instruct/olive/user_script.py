@@ -120,12 +120,12 @@ def get_vision_model(model_path=None):
     return wrapped
 
 
-# Vision shapes aligned with builder_simple: 384×384 → grid 24×24 = 576 patches.
-VISION_GRID_SIZE = 24
+# Vision: pixel_values shape [num_patches, 1536] with num_patches dynamic.
 VISION_PATCH_FEATURES = 3 * 2 * 16 * 16  # 1536
 
 
 def get_vision_io_config(model_path=None):
+    # First dim of pixel_values is dynamic ("num_patches"); second dim fixed 1536.
     return {
         "input_names": ["pixel_values", "image_grid_thw"],
         "output_names": ["image_features"],
@@ -134,14 +134,18 @@ def get_vision_io_config(model_path=None):
             "image_grid_thw": {0: "num_images"},
             "image_features": {0: "num_logical_patches"},
         },
+        "dynamic_axes": {
+            "pixel_values": {"0": "num_patches"},
+            "image_grid_thw": {"0": "num_images"},
+            "image_features": {"0": "num_logical_patches"},
+        },
     }
 
 
 def get_vision_dummy_inputs(model=None):
-    # Same as builder_simple: 384×384 → grid 24×24 = 576 patches; patch_features = 1536.
-    grid_t, grid_h, grid_w = 1, VISION_GRID_SIZE, VISION_GRID_SIZE
-    num_patches = grid_t * grid_h * grid_w
+    # Example shapes for tracing only; exported ONNX has dynamic num_patches.
+    # pixel_values: [num_patches, 1536], image_grid_thw: [num_images, 3].
+    num_patches = 576  # one example (e.g. 24×24 for 384×384)
     pixel_values = torch.randn(num_patches, VISION_PATCH_FEATURES, dtype=torch.float32)
-    image_grid_thw = torch.tensor([[grid_t, grid_h, grid_w]], dtype=torch.int64)
-    # Return tuple for torch.onnx.export (positional args in forward order).
+    image_grid_thw = torch.tensor([[1, 24, 24]], dtype=torch.int64)
     return (pixel_values, image_grid_thw)
