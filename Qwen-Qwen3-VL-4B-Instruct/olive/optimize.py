@@ -97,8 +97,8 @@ def update_genai_config(output_dir: str = "models", device: str = "gpu"):
                         "name": "resize",
                         "type": "Resize",
                         "attrs": {
-                            "width": 540,
-                            "height": 360,
+                            "width": 384,
+                            "height": 384,
                             "smart_resize": 1,
                             "min_pixels": 3136,
                             "max_pixels": 12845056,
@@ -121,9 +121,9 @@ def update_genai_config(output_dir: str = "models", device: str = "gpu"):
                         "name": "normalize",
                         "type": "Normalize",
                         "attrs": {
-                            "mean": [0.48145466, 0.4578275, 0.40821073],
-                            "std": [0.26862954, 0.26130258, 0.27577711],
-                            "qwen3_vl": 1
+                            "mean": [0.5, 0.5, 0.5],
+                            "std": [0.5, 0.5, 0.5],
+                            "qwen2_5_vl": 1
                         }
                     }
                 },
